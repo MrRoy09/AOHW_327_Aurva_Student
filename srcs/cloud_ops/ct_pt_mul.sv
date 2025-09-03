@@ -24,12 +24,10 @@ module ct_pt_mul #(
     output logic                    done
 );
 
-    // Internal control signals for pointwise multipliers
     logic start_mult_0, start_mult_1;
     logic done_mult_0, done_mult_1;
     logic core_bram_control_enable_0, core_bram_control_enable_1;
     
-    // State machine for coordinating parallel multiplications
     typedef enum logic [1:0] {
         CT_PT_IDLE,
         CT_PT_PROCESSING, 

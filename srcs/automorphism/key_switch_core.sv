@@ -102,7 +102,6 @@ module key_switch_core #(
         end
     end
 
-    // BRAM interface for internal storage
     DPBRAMInterface internal_a();
     PolyCoffDPBRAM #(.DLEN(32), .HLEN(8)) internal_a_bram (
         .clk(clk),
@@ -110,19 +109,15 @@ module key_switch_core #(
         .bram_if(internal_a)
     );
     
-    // Separate interfaces for multiplier and adder
     DPBRAMInterface mult_0_output();
     DPBRAMInterface internal_a_add();
     
-    // Mux control signal
     logic mul_to_internal_a;
     
-    // Connect internal_a to either multiplier or adder based on state
     always_comb begin
         mul_to_internal_a = (current_state == KS_MULT);
         
         for (int i = 0; i < 4; i++) begin
-            // Connect multiplier output to internal_a during multiplication
             if (mul_to_internal_a) begin
                 internal_a.en[i] = mult_0_output.en[i];
                 internal_a.we[i] = mult_0_output.we[i];
@@ -131,7 +126,6 @@ module key_switch_core #(
                 internal_a.di_a[i] = mult_0_output.di_a[i];
                 internal_a.di_b[i] = mult_0_output.di_b[i];
             end 
-            // Connect internal_a to adder during addition
             else begin
                 internal_a.en[i] = internal_a_add.en[i];
                 internal_a.we[i] = internal_a_add.we[i];
@@ -163,7 +157,7 @@ module key_switch_core #(
         .start(start_mul),
         .input_bram_1(c1_bram_1),
         .input_bram_2(evk0),
-        .output_brams(mult_0_output), // Use separate interface to avoid multi-driven nets
+        .output_brams(mult_0_output),
         .done(mult_done_0)
     );
 

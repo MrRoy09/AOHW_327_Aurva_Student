@@ -36,18 +36,14 @@ module automorphism_core_lut #(
     logic [COUNTER_WIDTH-1:0] write_counter;
     logic processing_complete;
 
-    // Input data from BRAMs
     logic [K-1:0] input_data [BATCH_SIZE];
 
-    // Source indices for current batch
     logic [7:0] source_indices [BATCH_SIZE];
 
-    // Target indices from LUT memory lookups
     logic [K-1:0] target_idx_1 [BATCH_SIZE];
     logic [K-1:0] target_idx_2 [BATCH_SIZE];
     logic [K-1:0] target_idx_3 [BATCH_SIZE];
 
-    // Pipeline registers
     logic [K-1:0] pipeline_data [PIPELINE_DEPTH][BATCH_SIZE];
     logic [K-1:0] pipeline_target_1 [PIPELINE_DEPTH][BATCH_SIZE];
     logic [K-1:0] pipeline_target_2 [PIPELINE_DEPTH][BATCH_SIZE];
@@ -55,7 +51,6 @@ module automorphism_core_lut #(
     logic [COUNTER_WIDTH-1:0] pipeline_write_addr [PIPELINE_DEPTH];
     logic pipeline_valid [PIPELINE_DEPTH];
 
-    // LUT DPBRAM instances for neg1, neg16, neg17
     AutoInterface #(.DLEN(K), .HLEN(8)) lut_neg1_if();
     AutoInterface #(.DLEN(K), .HLEN(8)) lut_neg16_if();
     AutoInterface #(.DLEN(K), .HLEN(8)) lut_neg17_if();
@@ -98,7 +93,6 @@ module automorphism_core_lut #(
         return index[7:1]; // Divide by 2
     endfunction
 
-    // LUT address generation and lookups
     always_comb begin
         for (int i = 0; i < BATCH_SIZE; i++) begin
             source_indices[i] = read_counter * BATCH_SIZE + i;
@@ -120,7 +114,6 @@ module automorphism_core_lut #(
         lut_neg17_if.addr_b[1] = source_indices[3] >> 1;
     end
 
-    // Read target indices from LUT memories
     always_comb begin
         target_idx_1[0] = lut_neg1_if.do_a[0];
         target_idx_1[1] = lut_neg1_if.do_a[1];
