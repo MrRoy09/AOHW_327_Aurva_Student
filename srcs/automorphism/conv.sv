@@ -9,14 +9,14 @@ module conv_unit #(
     input logic                reset,
     input logic                start,
 
-    DPBRAMInterface            input_image_brams_0,    // c0
-    DPBRAMInterface            input_image_brams_1,    // c1
+    DPBRAMInterface            input_image_brams_0,
+    DPBRAMInterface            input_image_brams_1,
 
 
     output logic               done
 );
 
-DPBRAMInterface #()input_auto_0();
+DPBRAMInterface #() input_auto_0();
 DPBRAMInterface #() input_auto_1();
 
 DPBRAMInterface #() a_00_auto();
@@ -327,7 +327,7 @@ key_switch_core #(.N(N), .K(K)) ks_3(
     .done(ks3_done)
 );
 
-ct_pt_mul #(.N(N), .K(K)) pt_ct_mul1 ( // zero rotation
+ct_pt_mul #(.N(N), .K(K)) pt_ct_mul1 (
     .clk(clk),
     .reset(reset),
     .start(mul_start),
@@ -340,7 +340,7 @@ ct_pt_mul #(.N(N), .K(K)) pt_ct_mul1 ( // zero rotation
     .done(mul1_done)
 );
 
-ct_pt_mul #(.N(N), .K(K)) pt_ct_mul2 ( // -1 rotation
+ct_pt_mul #(.N(N), .K(K)) pt_ct_mul2 (
     .clk(clk),
     .reset(reset),
     .start(mul_start),
@@ -353,7 +353,7 @@ ct_pt_mul #(.N(N), .K(K)) pt_ct_mul2 ( // -1 rotation
     .done(mul2_done)
 );
 
-ct_pt_mul #(.N(N), .K(K)) pt_ct_mul3 ( // -16 rotation
+ct_pt_mul #(.N(N), .K(K)) pt_ct_mul3 (
     .clk(clk),
     .reset(reset),
     .start(mul_start),
@@ -366,7 +366,7 @@ ct_pt_mul #(.N(N), .K(K)) pt_ct_mul3 ( // -16 rotation
     .done(mul3_done)
 );
 
-ct_pt_mul #(.N(N), .K(K)) pt_ct_mul4 ( // -17 rotation
+ct_pt_mul #(.N(N), .K(K)) pt_ct_mul4 (
     .clk(clk),
     .reset(reset),
     .start(mul_start),
@@ -533,7 +533,6 @@ always_comb begin
     endcase
 end
 
-//muxing logic
 always_comb begin
     case(state)
     ROTATE: begin
@@ -574,7 +573,6 @@ always_comb begin
             b_00_auto.do_a[i] = b_00_if.do_a[i];
             b_00_auto.do_b[i] = b_00_if.do_b[i];
 
-            // Connect b_01_auto to b_01_if
             b_01_if.en[i] = b_01_auto.en[i];
             b_01_if.we[i] = b_01_auto.we[i];
             b_01_if.addr_a[i] = b_01_auto.addr_a[i];
@@ -584,7 +582,6 @@ always_comb begin
             b_01_auto.do_a[i] = b_01_if.do_a[i];
             b_01_auto.do_b[i] = b_01_if.do_b[i];
 
-            // Connect b_10_auto to b_10_if
             b_10_if.en[i] = b_10_auto.en[i];
             b_10_if.we[i] = b_10_auto.we[i];
             b_10_if.addr_a[i] = b_10_auto.addr_a[i];
@@ -754,81 +751,83 @@ always_comb begin
     end
 
     ADD_01: begin
-        add_result_c0_1.en[i] = add_result_c0_1_stage1.en[i];
-        add_result_c0_1.we[i] = add_result_c0_1_stage1.we[i];
-        add_result_c0_1.addr_a[i] = add_result_c0_1_stage1.addr_a[i];
-        add_result_c0_1.addr_b[i] = add_result_c0_1_stage1.addr_b[i];
-        add_result_c0_1.di_a[i] = add_result_c0_1_stage1.di_a[i];
-        add_result_c0_1.di_b[i] = add_result_c0_1_stage1.di_b[i];
-        add_result_c0_1_stage1.do_a[i] = add_result_c0_1.do_a[i];
-        add_result_c0_1_stage1.do_b[i] = add_result_c0_1.do_b[i];
+        for (int i = 0; i < 4; i++) begin
+            add_result_c0_1.en[i] = add_result_c0_1_stage1.en[i];
+            add_result_c0_1.we[i] = add_result_c0_1_stage1.we[i];
+            add_result_c0_1.addr_a[i] = add_result_c0_1_stage1.addr_a[i];
+            add_result_c0_1.addr_b[i] = add_result_c0_1_stage1.addr_b[i];
+            add_result_c0_1.di_a[i] = add_result_c0_1_stage1.di_a[i];
+            add_result_c0_1.di_b[i] = add_result_c0_1_stage1.di_b[i];
+            add_result_c0_1_stage1.do_a[i] = add_result_c0_1.do_a[i];
+            add_result_c0_1_stage1.do_b[i] = add_result_c0_1.do_b[i];
 
-        add_result_c0_2.en[i] = add_result_c0_1_stage1s.en[i];
-        add_result_c0_2.we[i] = add_result_c0_1_stage1.we[i];
-        add_result_c0_2.addr_a[i] = add_result_c0_1_stage1.addr_a[i];
-        add_result_c0_2.addr_b[i] = add_result_c0_1_stage1.addr_b[i];
-        add_result_c0_2.di_a[i] = add_result_c0_1_stage2.di_a[i];
-        add_result_c0_2.di_b[i] = add_result_c0_1_stage2.di_b[i];
-        add_result_c0_2_stage1.do_a[i] = add_result_c0_2.do_a[i];
-        add_result_c0_2_stage1.do_b[i] = add_result_c0_2.do_b[i];
+            add_result_c0_2.en[i] = add_result_c0_2_stage1.en[i];
+            add_result_c0_2.we[i] = add_result_c0_2_stage1.we[i];
+            add_result_c0_2.addr_a[i] = add_result_c0_2_stage1.addr_a[i];
+            add_result_c0_2.addr_b[i] = add_result_c0_2_stage1.addr_b[i];
+            add_result_c0_2.di_a[i] = add_result_c0_2_stage1.di_a[i];
+            add_result_c0_2.di_b[i] = add_result_c0_2_stage1.di_b[i];
+            add_result_c0_2_stage1.do_a[i] = add_result_c0_2.do_a[i];
+            add_result_c0_2_stage1.do_b[i] = add_result_c0_2.do_b[i];
 
-        add_result_c1_1.en[i] = add_result_c1_1_stage1.en[i];
-        add_result_c1_1.we[i] = add_result_c1_1_stage1.we[i];
-        add_result_c1_1.addr_a[i] = add_result_c1_1_stage1.addr_a[i];
-        add_result_c1_1.addr_b[i] = add_result_c1_1_stage1.addr_b[i];
-        add_result_c1_1.di_a[i] = add_result_c1_1_stage1.di_a[i];
-        add_result_c1_1.di_b[i] = add_result_c1_1_stage1.di_b[i];
-        add_result_c1_1_stage1.do_a[i] = add_result_c1_1.do_a[i];
-        add_result_c1_1_stage1.do_b[i] = add_result_c1_1.do_b[i];
+            add_result_c1_1.en[i] = add_result_c1_1_stage1.en[i];
+            add_result_c1_1.we[i] = add_result_c1_1_stage1.we[i];
+            add_result_c1_1.addr_a[i] = add_result_c1_1_stage1.addr_a[i];
+            add_result_c1_1.addr_b[i] = add_result_c1_1_stage1.addr_b[i];
+            add_result_c1_1.di_a[i] = add_result_c1_1_stage1.di_a[i];
+            add_result_c1_1.di_b[i] = add_result_c1_1_stage1.di_b[i];
+            add_result_c1_1_stage1.do_a[i] = add_result_c1_1.do_a[i];
+            add_result_c1_1_stage1.do_b[i] = add_result_c1_1.do_b[i];
 
-        add_result_c1_2.en[i] = add_result_c1_1_stage1.en[i];
-        add_result_c1_2.we[i] = add_result_c1_1_stage1.we[i];
-        add_result_c1_2.addr_a[i] = add_result_c1_1_stage1.addr_a[i];
-        add_result_c1_2.addr_b[i] = add_result_c1_1_stage1.addr_b[i];
-        add_result_c1_2.di_a[i] = add_result_c1_1_stage1.di_a[i];
-        add_result_c1_2.di_b[i] = add_result_c1_1_stage1.di_b[i];
-        add_result_c1_2_stage1.do_a[i] = add_result_c1_2.do_a[i];
-        add_result_c1_2_stage1.do_b[i] = add_result_c1_2.do_b[i];
-
+            add_result_c1_2.en[i] = add_result_c1_2_stage1.en[i];
+            add_result_c1_2.we[i] = add_result_c1_2_stage1.we[i];
+            add_result_c1_2.addr_a[i] = add_result_c1_2_stage1.addr_a[i];
+            add_result_c1_2.addr_b[i] = add_result_c1_2_stage1.addr_b[i];
+            add_result_c1_2.di_a[i] = add_result_c1_2_stage1.di_a[i];
+            add_result_c1_2.di_b[i] = add_result_c1_2_stage1.di_b[i];
+            add_result_c1_2_stage1.do_a[i] = add_result_c1_2.do_a[i];
+            add_result_c1_2_stage1.do_b[i] = add_result_c1_2.do_b[i];
+        end
     end
 
     ADD_FINAL: begin
+        for (int i = 0; i < 4; i++) begin
+            add_result_c0_1.en[i] = add_result_c0_1_stage2.en[i];
+            add_result_c0_1.we[i] = add_result_c0_1_stage2.we[i];
+            add_result_c0_1.addr_a[i] = add_result_c0_1_stage2.addr_a[i];
+            add_result_c0_1.addr_b[i] = add_result_c0_1_stage2.addr_b[i];
+            add_result_c0_1.di_a[i] = add_result_c0_1_stage2.di_a[i];
+            add_result_c0_1.di_b[i] = add_result_c0_1_stage2.di_b[i];
+            add_result_c0_1_stage2.do_a[i] = add_result_c0_1.do_a[i];
+            add_result_c0_1_stage2.do_b[i] = add_result_c0_1.do_b[i];
 
-        add_result_c0_1.en[i] = add_result_c0_1_stage2.en[i];
-        add_result_c0_1.we[i] = add_result_c0_1_stage2.we[i];
-        add_result_c0_1.addr_a[i] = add_result_c0_1_stage2.addr_a[i];
-        add_result_c0_1.addr_b[i] = add_result_c0_1_stage2.addr_b[i];
-        add_result_c0_1.di_a[i] = add_result_c0_1_stage2.di_a[i];
-        add_result_c0_1.di_b[i] = add_result_c0_1_stage2.di_b[i];
-        add_result_c0_1_stage2.do_a[i] = add_result_c0_1.do_a[i];
-        add_result_c0_1_stage2.do_b[i] = add_result_c0_1.do_b[i];
+            add_result_c0_2.en[i] = add_result_c0_2_stage2.en[i];
+            add_result_c0_2.we[i] = add_result_c0_2_stage2.we[i];
+            add_result_c0_2.addr_a[i] = add_result_c0_2_stage2.addr_a[i];
+            add_result_c0_2.addr_b[i] = add_result_c0_2_stage2.addr_b[i];
+            add_result_c0_2.di_a[i] = add_result_c0_2_stage2.di_a[i];
+            add_result_c0_2.di_b[i] = add_result_c0_2_stage2.di_b[i];
+            add_result_c0_2_stage2.do_a[i] = add_result_c0_2.do_a[i];
+            add_result_c0_2_stage2.do_b[i] = add_result_c0_2.do_b[i];
 
-        add_result_c0_2.en[i] = add_result_c0_1_stage2.en[i];
-        add_result_c0_2.we[i] = add_result_c0_1_stage2.we[i];
-        add_result_c0_2.addr_a[i] = add_result_c0_1_stage2.addr_a[i];
-        add_result_c0_2.addr_b[i] = add_result_c0_1_stage2.addr_b[i];
-        add_result_c0_2.di_a[i] = add_result_c0_1_stage2.di_a[i];
-        add_result_c0_2.di_b[i] = add_result_c0_1_stage2.di_b[i];
-        add_result_c0_2_stage2.do_a[i] = add_result_c0_2.do_a[i];
-        add_result_c0_2_stage2.do_b[i] = add_result_c0_2.do_b[i];
+            add_result_c1_1.en[i] = add_result_c1_1_stage2.en[i];
+            add_result_c1_1.we[i] = add_result_c1_1_stage2.we[i];
+            add_result_c1_1.addr_a[i] = add_result_c1_1_stage2.addr_a[i];
+            add_result_c1_1.addr_b[i] = add_result_c1_1_stage2.addr_b[i];
+            add_result_c1_1.di_a[i] = add_result_c1_1_stage2.di_a[i];
+            add_result_c1_1.di_b[i] = add_result_c1_1_stage2.di_b[i];
+            add_result_c1_1_stage2.do_a[i] = add_result_c1_1.do_a[i];
+            add_result_c1_1_stage2.do_b[i] = add_result_c1_1.do_b[i];
 
-        add_result_c1_1.en[i] = add_result_c1_1_stage2.en[i];
-        add_result_c1_1.we[i] = add_result_c1_1_stage2.we[i];
-        add_result_c1_1.addr_a[i] = add_result_c1_1_stage2.addr_a[i];
-        add_result_c1_1.addr_b[i] = add_result_c1_1_stage2.addr_b[i];
-        add_result_c1_1.di_a[i] = add_result_c1_1_stage2.di_a[i];
-        add_result_c1_1.di_b[i] = add_result_c1_1_stage2.di_b[i];
-        add_result_c1_1_stage2.do_a[i] = add_result_c1_1.do_a[i];
-        add_result_c1_1_stage2.do_b[i] = add_result_c1_1.do_b[i];
-
-        add_result_c1_2.en[i] = add_result_c1_1_stage2.en[i];
-        add_result_c1_2.we[i] = add_result_c1_1_stage2.we[i];
-        add_result_c1_2.addr_a[i] = add_result_c1_1_stage2.addr_a[i];
-        add_result_c1_2.addr_b[i] = add_result_c1_1_stage2.addr_b[i];
-        add_result_c1_2.di_a[i] = add_result_c1_1_stage2.di_a[i];
-        add_result_c1_2.di_b[i] = add_result_c1_1_stage2.di_b[i];
-        add_result_c1_2_stage2.do_a[i] = add_result_c1_2.do_a[i];
-        add_result_c1_2_stage2.do_b[i] = add_result_c1_2.do_b[i];
+            add_result_c1_2.en[i] = add_result_c1_2_stage2.en[i];
+            add_result_c1_2.we[i] = add_result_c1_2_stage2.we[i];
+            add_result_c1_2.addr_a[i] = add_result_c1_2_stage2.addr_a[i];
+            add_result_c1_2.addr_b[i] = add_result_c1_2_stage2.addr_b[i];
+            add_result_c1_2.di_a[i] = add_result_c1_2_stage2.di_a[i];
+            add_result_c1_2.di_b[i] = add_result_c1_2_stage2.di_b[i];
+            add_result_c1_2_stage2.do_a[i] = add_result_c1_2.do_a[i];
+            add_result_c1_2_stage2.do_b[i] = add_result_c1_2.do_b[i];
+        end
     end
 
     default: begin
@@ -846,7 +845,6 @@ always_comb begin
             b_10_auto.do_a[i] = '0;
             b_10_auto.do_b[i] = '0;
 
-            // Disconnect key-switch intermediate interfaces
             ksa_00_auto.do_a[i] = '0;
             ksa_00_auto.do_b[i] = '0;
             ksa_01_auto.do_a[i] = '0;
